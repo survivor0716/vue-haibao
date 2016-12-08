@@ -24,8 +24,11 @@
 </template>
 
 <script>
-// import Hello from './components/Hello'
+// import 已添加商品的列表页
 import Haibao from './components/haibao'
+
+// 添加助力人数api
+const addZhuliNumberApi = 'http://pin.haibaozhuli.test.willar.net/manage/addZhuliNumber'
 
 export default {
   name: 'app',
@@ -42,22 +45,57 @@ export default {
   },
   data () {
     return {
-      state: true,
-      addUrl: 'http://pin.haibaozhuli.test.willar.net/manage/addZhuliNumber',
-      url: 'http://market.cmbc.test.youngmanager.cn/test4'
+      state: true
     }
   },
   methods: {
+    // 添加新的商品按钮click事件的触发方法
     addProd () {
-      console.log('add')
+      // 请求参数
+      let params = {}
+      console.log('调用 addProd(), params = ', params)
+
+      // 异步请求 addZhuliNumberApi
+      this.$http.post(addZhuliNumberApi, params).then(
+      (response) => {
+        console.log(response.body)
+      }, (response) => {
+        console.log('error callback')
+      })
     },
 
+    // 开启、关闭按钮click事件的触发方法
     toggleState () {
       this.state = !this.state
     },
+
+    // 添加助力人数按钮click事件的触发方法
     addZhuliNum () {
-      this.$http.post(this.url).then((response) => {
-        console.log('success callback')
+      // 请求参数
+      let params = {
+        uid: '2',
+        code: '123'
+      }
+      console.log('调用 addZhuliNum(), params = ', params)
+
+      // 异步请求 addZhuliNumberApi
+      this.$http.post(addZhuliNumberApi, params, {
+        // use before callback
+        before (request) {
+          // abort previous request, if exists
+          // 如果存在重复请求，终止上一次请求
+          if (this.previousRequest) {
+            this.previousRequest.abort()
+            console.log('abort request')
+          }
+
+          // set previous request on Vue instance
+          // 对Vue实例添加previousRequest属性
+          this.previousRequest = request
+        }
+      }).then(
+      (response) => {
+        console.log(response.body)
       }, (response) => {
         console.log('error callback')
       })

@@ -80,7 +80,7 @@
       inline-template
       label="操作">
       <div>
-        <el-button type="text">修改</el-button>
+        <el-button type="text" @click="edit(row.id)">修改</el-button>
       </div>
     </el-table-column>
   </el-table>
@@ -106,10 +106,10 @@ export default {
         pic3: 'http://pin.haibaozhuli.cdn.willar.net/pin1212_test/detailImg/20161207100214_ONE_detail.png'
       }, {
         name: '清风原木纯品2层150抽4包抽面纸',
-        pid: 'ONE',
+        pid: 'TWO',
         state: '正常上线',
         endline: '2016-12-18 00:00:00',
-        id: '1',
+        id: '2',
         num: '30',
         time: '72小时',
         pic1: 'http://pin.haibaozhuli.cdn.willar.net/pin1212_test/entranceImg/20161207101159_ONE_entrance.png',
@@ -117,7 +117,14 @@ export default {
         btn1: 'http://pin.haibaozhuli.cdn.willar.net/pin1212_test/buttonStartedImg/20161207100214_ONE_btnStarted.png',
         btn2: 'http://pin.haibaozhuli.cdn.willar.net/pin1212_test/buttonEndImg/20161207100214_ONE_btnEnd.png',
         pic3: 'http://pin.haibaozhuli.cdn.willar.net/pin1212_test/detailImg/20161207100214_ONE_detail.png'
-      }]
+      }],
+      tableData1: {}
+    }
+  },
+  methods: {
+    // 修改按钮click事件的触发方法
+    edit (id) {
+      console.log('调用 edit(), id = ' + id)
     }
   }
 }
