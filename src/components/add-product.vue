@@ -42,6 +42,11 @@
     <el-button type="primary" @click="onSubmit">立即创建</el-button>
     <el-button>取消</el-button>
   </el-form-item>
+  <el-form-item :label="i.label" v-for="(i, index) in inputs">
+    <el-input type="text" v-model="i.testDesc"></el-input>
+    <el-button type="primary" @click="editInput(index)">清空</el-button>
+    <el-button type="primary" @click="delInput(index)">删除</el-button>
+  </el-form-item>
 </el-form>
 </template>
 <script>
@@ -57,12 +62,46 @@
           type: [],
           resource: '',
           desc: ''
-        }
+        },
+        inputs: [
+          {
+            label: 'test1',
+            testDesc: '1'
+          },
+          {
+            label: 'test2',
+            testDesc: '2'
+          },
+          {
+            label: 'test3',
+            testDesc: '3'
+          },
+          {
+            label: 'test4',
+            testDesc: '4'
+          }
+        ]
       }
     },
     methods: {
       onSubmit () {
         console.log('submit!')
+        this.addInput()
+      },
+      addInput () {
+        console.log('invoke addInput()')
+        this.inputs.push({
+          label: '',
+          testDesc: ''
+        })
+      },
+      editInput (index) {
+        this.inputs[index].testDesc = ''
+      },
+      delInput (index) {
+        console.log('invoke delInput()')
+        this.inputs.splice(index, 1)
+        console.log('current inputs = ', this.inputs)
       }
     }
   }

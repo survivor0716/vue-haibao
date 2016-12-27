@@ -3,7 +3,7 @@
     <el-tabs :active-name="activeName">
       <el-tab-pane label="商品列表" name="first">
         <el-row>
-          <haibao></haibao>
+          <product-table :table-data="tableData"></product-table>
         </el-row>
         <el-row>
           <el-col>
@@ -12,12 +12,14 @@
         </el-row>
       </el-tab-pane>
       <el-tab-pane label="已上新商品" name="second">
-        <haibao-online></haibao-online>
+        <el-row>
+          <product-table :table-data="tableOnlineData"></product-table>
+        </el-row>
       </el-tab-pane>
-      <el-tab-pane label="添加助力人数" name="third">
+      <el-tab-pane label="添加助力人数" name="forth">
         <el-button @click="addZhuliNum()">添加助力人数</el-button>
       </el-tab-pane>
-      <el-tab-pane label="添加新的商品" name="forth">
+      <el-tab-pane label="添加新的商品" name="fifth">
         <el-row :gutter="20">
           <el-col :span="6">
             <h4>Demo</h4>
@@ -40,13 +42,14 @@
 </template>
 
 <script>
-// import 已添加商品的列表页
-import Haibao from '../components/haibao'
-// import 已上线商品的列表页
-import HaibaoOnline from '../components/haibao-online'
+// import 商品的列表页
+import ProductTable from '../components/product'
+
 // import 添加新的商品的Form页
-import AddProduct from '../components/addProduct'
+import AddProduct from '../components/add-product'
 import FormDemo from '../components/form-demo'
+
+import Api from '../components/api.js'
 
 // 添加助力人数api
 const addZhuliNumberApi = 'http://pin.haibaozhuli.test.willar.net/manage/addZhuliNumber'
@@ -54,8 +57,7 @@ const addZhuliNumberApi = 'http://pin.haibaozhuli.test.willar.net/manage/addZhul
 export default {
   name: 'app',
   components: {
-    Haibao,
-    HaibaoOnline,
+    ProductTable,
     AddProduct,
     FormDemo
   },
@@ -70,8 +72,14 @@ export default {
   data () {
     return {
       state: true,
-      activeName: 'first'
+      activeName: 'first',
+      tableData: null,
+      tableOnlineData: null
     }
+  },
+  created () {
+    this.getProd()
+    this.getProdOnline()
   },
   methods: {
     // 添加新的商品按钮click事件的触发方法
@@ -124,12 +132,37 @@ export default {
       }, (response) => {
         console.log('error callback')
       })
+    },
+    getProd () {
+      // 请求参数
+      let params = {}
+
+      // 异步请求 addZhuliNumberApi
+      this.$http.post(Api + '/manage/productList', params).then(
+      (response) => {
+        let res = response.body
+        if (!res.errCode) {
+          console.log(res.data)
+          this.$set(this, 'tableData', res.data.productData)
+        } else {
+          window.alert(res.errCode)
+        }
+      }, (response) => {
+        return 'error callback'
+      })
+    },
+    getProdOnline () {
+      let resource = this.$resource(Api + '/manage/productList')
+
+      resource.get({state: '1'}).then((response) => {
+        this.$set(this, 'tableOnlineData', response.body.data)
+      })
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 .el-tabs {
   width: 100%;
 }
